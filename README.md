@@ -1,6 +1,6 @@
-# Crate — A Minimal Tin Collection
+# Tin Dump — A Minimal Tin Collection
 
-Crate is a minimal, premium web application designed as an open canvas to showcase a collection of drink tins. It abandons traditional web layouts (no navbars, no hero sections, no footers, no grids) in favor of a freeform, scrollable space where tins can be placed anywhere.
+Tin Dump is a minimal, premium web application designed as an open canvas to showcase a collection of drink tins. It abandons traditional web layouts (no navbars, no hero sections, no footers, no grids) in favor of a freeform, scrollable space where tins can be placed anywhere.
 
 ## Features
 
