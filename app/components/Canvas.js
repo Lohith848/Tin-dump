@@ -60,6 +60,7 @@ export default function Canvas() {
   const [selectedTin, setSelectedTin] = useState(null);
   const [popoverPos, setPopoverPos] = useState({ x: 0, y: 0 });
   const [dragState, setDragState] = useState(null);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const canvasRef = useRef(null);
   const canvasInnerRef = useRef(null);
 
@@ -68,6 +69,19 @@ export default function Canvas() {
     fetchUserTins();
     fetchCatalog();
   }, [fetchUserTins, fetchCatalog]);
+
+  // Track canvas dimensions to place tins responsively
+  useEffect(() => {
+    const updateCanvasSize = () => {
+      const el = canvasInnerRef.current;
+      if (!el) return;
+      setContainerSize({ width: el.clientWidth, height: el.clientHeight });
+    };
+
+    updateCanvasSize();
+    window.addEventListener('resize', updateCanvasSize);
+    return () => window.removeEventListener('resize', updateCanvasSize);
+  }, []);
 
   // Handle FAB toggle
   const toggleFab = useCallback(() => {
@@ -85,20 +99,20 @@ export default function Canvas() {
 
   // Handle selecting a catalog tin from overlay
   const handleSelectCatalogTin = useCallback(async (catalogTin) => {
-    const containerWidth = canvasInnerRef.current?.clientWidth || window.innerWidth;
+    const containerWidth = canvasInnerRef.current?.clientWidth || containerSize.width || window.innerWidth;
     const spot = findOpenSpot(tins, containerWidth);
     await addTinToBoard(catalogTin.id, spot.x, spot.y);
-  }, [tins, addTinToBoard]);
+  }, [tins, addTinToBoard, containerSize.width]);
 
   // Handle adding a brand new tin
   const handleAddNewTin = useCallback(async (name, photoBlob) => {
     const catalogEntry = await addToCatalog(name, photoBlob);
     if (catalogEntry) {
-      const containerWidth = canvasInnerRef.current?.clientWidth || window.innerWidth;
+      const containerWidth = canvasInnerRef.current?.clientWidth || containerSize.width || window.innerWidth;
       const spot = findOpenSpot(tins, containerWidth);
       await addTinToBoard(catalogEntry.id, spot.x, spot.y);
     }
-  }, [tins, addToCatalog, addTinToBoard]);
+  }, [tins, addToCatalog, addTinToBoard, containerSize.width]);
 
   // Tin selection (popover)
   const handleSelectTin = useCallback((tin, e) => {
@@ -204,7 +218,11 @@ export default function Canvas() {
   }, []);
 
   // Calculate canvas min-height based on tin positions
-  const maxY = tins.reduce((max, t) => Math.max(max, t.y + CELL_H + PADDING), window.innerHeight * 2);
+  const viewportHeight = Math.max(containerSize.height || 800, 800);
+  const maxY = tins.reduce(
+    (max, t) => Math.max(max, t.y + CELL_H + PADDING),
+    Math.round(viewportHeight * 1.2)
+  );
 
   return (
     <>

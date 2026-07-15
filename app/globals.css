@@ -65,13 +65,15 @@ html, body {
   overflow: auto;
   background: var(--bg);
   cursor: default;
+  touch-action: pan-y;
 }
 
 .canvas-inner {
   position: relative;
-  min-width: 100vw;
-  min-height: 200vh;
-  padding: 40px;
+  width: min(100%, 1400px);
+  min-height: 100%;
+  padding: clamp(24px, 5vw, 40px);
+  margin: 0 auto;
 }
 
 .canvas-empty {
@@ -106,9 +108,11 @@ html, body {
    ============================================ */
 .tin-card {
   position: absolute;
-  width: var(--tin-width);
+  width: min(var(--tin-width), calc(100vw - 48px));
+  max-width: var(--tin-width);
   cursor: grab;
   user-select: none;
+  touch-action: none;
   transition: box-shadow 0.2s ease, transform 0.15s ease;
   animation: tinAppear 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
@@ -137,8 +141,8 @@ html, body {
 }
 
 .tin-photo-wrap {
-  width: var(--tin-width);
-  height: var(--tin-height);
+  width: 100%;
+  aspect-ratio: 3 / 4;
   border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--white);
@@ -225,6 +229,36 @@ html, body {
 
 .fab.open svg {
   transform: rotate(45deg);
+}
+
+@media (max-width: 640px) {
+  .canvas-inner {
+    padding: 24px 16px 100px;
+  }
+
+  .fab {
+    bottom: 18px;
+    right: 18px;
+    width: 52px;
+    height: 52px;
+  }
+
+  .overlay-panel {
+    width: min(100%, 94vw);
+    bottom: 18px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    max-height: 88vh;
+  }
+
+  .popover {
+    width: min(92vw, 220px);
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: auto !important;
+    bottom: 18px;
+  }
 }
 
 /* ============================================

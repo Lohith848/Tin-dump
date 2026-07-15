@@ -21,6 +21,11 @@ export default function TinCard({
     const startX = e.clientX;
     const startY = e.clientY;
 
+    // Keep drag gestures working reliably on touch and pen input.
+    if (e.currentTarget.setPointerCapture) {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+
     // Small threshold to distinguish click from drag
     const checkMove = (ev) => {
       if (Math.abs(ev.clientX - startX) > 3 || Math.abs(ev.clientY - startY) > 3) {
