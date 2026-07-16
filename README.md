@@ -98,6 +98,6 @@ If the images already exist in storage and you only want to populate the databas
 node scripts/seed-db-only.mjs
 ```
 
-## Notes
+## Author 
 
-The app is designed to feel lightweight and tactile. It uses anonymous authentication so a user can start immediately, and it applies optimistic updates to make board interactions feel fast and responsive.
+A random idea by Lohith G.
