@@ -1,68 +1,103 @@
-# Tin Dump — A Minimal Tin Collection
+# Tin Dump
 
-Tin Dump is a minimal, premium web application designed as an open canvas to showcase a collection of drink tins. It abandons traditional web layouts (no navbars, no hero sections, no footers, no grids) in favor of a freeform, scrollable space where tins can be placed anywhere.
+Tin Dump is a polished, minimal web app for curating and arranging a personal collection of drink tins on a freeform canvas. The experience is intentionally simple and immersive: visitors can browse a shared catalog, add tins to their own board, drag them into place, and manage counts without any traditional dashboard UI.
 
-## Features
+## What this project does
 
-- **Open Canvas Layout**: Place your tins anywhere on an infinite-feeling canvas. Tins can be dragged and repositioned freely.
-- **Premium Aesthetics**: Built with a curated color palette (stone `#f1f0eb` background, deep bottle green `#28453a` accents) and modern typography (Bricolage Grotesque, Inter, IBM Plex Mono).
-- **Floating Action Button (FAB)**: A single `+` button handles searching the catalog, adding new tins, and uploading photos.
-- **In-Browser Image Cropping**: When adding a new tin, users can pan and zoom their uploaded photo to crop it perfectly before it saves to the database.
-- **Silent Anonymous Authentication**: No signup forms or passwords. The app uses Supabase's anonymous sign-ins to seamlessly give every user their own isolated collection canvas.
-- **Optimistic UI Updates**: Tins appear on the board instantly when added or moved, without waiting for database confirmation.
+This app combines a visual canvas experience with a lightweight backend powered by Supabase. Users get an anonymous session automatically, allowing them to start building their collection immediately. Tins can be:
 
-## Tech Stack
+- added from an existing catalog
+- uploaded as new entries with in-browser cropping
+- repositioned freely on the board
+- incremented or removed from the personal collection
 
-- **Framework**: Next.js 16 (App Router)
-- **Styling**: Vanilla CSS (`globals.css`)
-- **Database & Auth**: Supabase (Postgres, Row Level Security, Anonymous Auth, Storage)
-- **Icons**: Lucide React
+## Key features
 
-## Setup Instructions
+- Freeform canvas layout with draggable tin cards
+- Floating action button for catalog browsing and new tin creation
+- In-browser image cropping and upload flow
+- Anonymous authentication with per-user isolation
+- Optimistic UI updates for movement and collection changes
+- Shared catalog support for reusable tin entries
 
-### 1. Supabase Project Setup
+## Tech stack
 
-1. Create a new project at [supabase.com](https://supabase.com).
-2. Go to the **SQL Editor** and run the contents of `supabase-schema.sql` to create the required tables (`tin_catalog`, `user_tins`) and Row Level Security (RLS) policies.
-3. Go to **Authentication -> Providers** and enable **Anonymous Sign-Ins**.
+- Next.js 16 (App Router)
+- React 19
+- Supabase for authentication, Postgres, storage, and row-level security
+- Vanilla CSS for styling
 
-### 2. Storage Bucket Configuration
+## Project structure
 
-1. In Supabase, go to **Storage** and create a new bucket named exactly **`tin-photos`**.
-2. **Crucial:** Make sure the **"Public bucket"** toggle is enabled so images can load in the browser.
-3. Your bucket should now have the policies created by the SQL schema allowing uploads and public reads.
+- app/ — application entry point and UI components
+  - app/page.js — main app entry
+  - app/components/ — canvas, FAB, crop tool, card, and popover UI
+- lib/ — Supabase client and data hooks
+  - lib/supabase.js — shared Supabase browser client
+  - lib/useTins.js — user board state and mutations
+  - lib/useCatalog.js — shared tin catalog queries and uploads
+- scripts/ — helper scripts for data seeding and validation
+- supabase-schema.sql — database schema, indexes, and RLS policies
 
-### 3. Environment Variables
+## Prerequisites
 
-Create a `.env.local` file in the root directory and add your Supabase credentials (found in Project Settings -> API):
+Before running the app locally, make sure you have:
+
+- Node.js 18 or newer
+- npm
+- A Supabase project
+
+## Supabase setup
+
+1. Create a new project in Supabase.
+2. Open the SQL Editor and run the contents of supabase-schema.sql.
+3. Enable Anonymous Sign-ins in Authentication > Providers.
+4. Create a storage bucket named tin-photos and mark it as public.
+5. Ensure the bucket policies allow authenticated uploads and public reads.
+
+## Environment variables
+
+Create a .env.local file in the project root with the following values:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 ```
 
-### 4. Running the App
+## Local development
 
-Install dependencies and start the development server:
+Install dependencies and start the app:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view your collection canvas.
+Then open http://localhost:3000 in your browser.
 
-### 5. Seeding Data (Optional)
+## Data model
 
-If you have a set of starting images you want to populate into the global catalog:
-1. Ensure the images are available in an `assests/` folder.
-2. Ensure your `tin-photos` bucket is public.
-3. Run `node scripts/seed.mjs` to upload the images and add them to the database.
-4. If you manually uploaded the images to the bucket already, you can use `node scripts/seed-db-only.mjs` to populate just the database catalog.
+The app uses two main database tables:
 
-## Project Structure
+- tin_catalog — shared list of known tins with a name and photo URL
+- user_tins — each user’s placed tins, including position, count, and link to the catalog entry
 
-- `/app`: Next.js App Router files, layout, and main page.
-- `/app/components`: Reusable UI components (`Canvas`, `Fab`, `CropTool`, `TinCard`, etc.)
-- `/lib`: Supabase client initialization and custom React hooks (`useCatalog`, `useTins`) for data fetching.
-- `/scripts`: Utility scripts for seeding initial data into Supabase.
+Images are stored in the Supabase Storage bucket tin-photos.
+
+## Seeding data (optional)
+
+If you want to preload a catalog from local image assets:
+
+```bash
+node scripts/seed.mjs
+```
+
+If the images already exist in storage and you only want to populate the database catalog, use:
+
+```bash
+node scripts/seed-db-only.mjs
+```
+
+## Notes
+
+The app is designed to feel lightweight and tactile. It uses anonymous authentication so a user can start immediately, and it applies optimistic updates to make board interactions feel fast and responsive.
