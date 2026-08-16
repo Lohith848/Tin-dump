@@ -1,4 +1,4 @@
-# Tin Dump
+# Tin Dump.
 
 Tin Dump is a polished, minimal web app for curating and arranging a personal collection of drink tins on a freeform canvas. The experience is intentionally simple and immersive: visitors can browse a shared catalog, add tins to their own board, drag them into place, and manage counts without any traditional dashboard UI.
 
