@@ -97,5 +97,8 @@ If the images already exist in storage and you only want to populate the databas
 ```bash
 node scripts/seed-db-only.mjs
 ```
+---
 
 ## A random idea by Lohith G.
+
+---
