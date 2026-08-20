@@ -98,6 +98,4 @@ If the images already exist in storage and you only want to populate the databas
 node scripts/seed-db-only.mjs
 ```
 
-## Author 
-
-A random idea by Lohith G.
+## A random idea by Lohith G.
